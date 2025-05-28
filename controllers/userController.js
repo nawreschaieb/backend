@@ -63,10 +63,11 @@ const updateUserController = async (req, res) => {
         message: "User not found",
       });
     }
-    const { userName, address, phone } = req.body;
+    const { userName, phone, profile } = req.body;
     if (userName) user.userName = userName;
-    if (address) user.address = address;
     if (phone) user.phone = phone;
+    if (profile) user.profile = profile;
+
     await user.save();
     res.status(200).send({
       success: true,

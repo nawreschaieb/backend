@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: [true, "user type is required"],
-      default: "client",
+      default: "Participant",
       enum: ["Participant", "Organisateur"],
     },
     profile: {
@@ -36,9 +36,7 @@ const userSchema = new mongoose.Schema(
       default:
         "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_640.png",
     },
-       address: {
-      type: Array,
-    },
+      
   
     update_pass_date: {
       type: Date,

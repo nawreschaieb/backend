@@ -19,10 +19,10 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    if (user.usertype !== "admin") {
+    if (user.usertype !== "organisateur") {
       return res.status(403).send({
         success: false,
-        message: "Only admin can access this resource.",
+        message: "Only organisateur can access this resource.",
       });
     }
 

@@ -12,11 +12,12 @@ const path = require("path");
 
 const createEventController = async (req, res) => {
   try {
-    const { titre, lieu, prix, categorie, date } = req.body;
+    const { titre, prix, date, region, lieu, image, categorie } = req.body;
   
 
     // Validation basique obligatoire
-    if (!titre || !lieu || !prix || !categorie || !date) {
+    if (!titre || !prix || !date || !region || !lieu || !categorie) 
+      {
       return res.status(400).json({
         success: false,
         message: "Tous les champs obligatoires doivent être remplis.",
@@ -69,6 +70,7 @@ const createEventController = async (req, res) => {
       titre,
       lieu,
       prix,
+      region,
       categorie,
       date: eventDate,
       photo: photoFilename,
