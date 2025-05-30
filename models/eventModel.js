@@ -6,7 +6,13 @@ const eventSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   region: { type: String, required: true },
   lieu: { type: String, required: true },
-  image: { type: String }, // URL ou nom du fichier
+  //image: { type: String }, // URL ou nom du fichier
+  image: [
+      {
+        url: String,
+        public_id: String,
+      },
+    ],
   categorie: { type: String, required: true },
 }, { timestamps: true });
 
