@@ -32,27 +32,27 @@ exports.uploadImage = async (req, res) => {
 
 exports.getSignedImageUrl = async (req, res) => {
   const publicId = req.params.public_id;
-  
+
   try {
     // Vérifier si le publicId contient une extension
     const parts = publicId.split('.');
     let extension = '';
     let actualPublicId = publicId;
-    
+
     // S'il y a une extension
     if (parts.length > 1) {
       extension = parts.pop(); // Obtenir l'extension
       actualPublicId = parts.join('.'); // Reconstruire le publicId sans l'extension
     }
-    
+
     // Options pour l'URL signée
     const options = {
       expires_at: Math.floor(Date.now() / 1000) + 60 * 5, // 5 minutes
     };
-    
+
     // Générer l'URL signée
     const signedUrl = cloudinary.utils.private_download_url(actualPublicId, extension, options);
-    
+
     return res.json({ signedUrl });
   } catch (err) {
     console.error("Erreur lors de la génération de l'URL signée :", err);

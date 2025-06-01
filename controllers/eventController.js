@@ -104,8 +104,11 @@ const { titre, prix, date, region, lieu, image, categorie } = req.body;
 
 const getAllEventsController = async (req, res) => {
   try {
-    // Pagination, filtrage, tri via APIFeatures
-    const features = new APIFeatures(EventModel.find(), req.query)
+    // Sélection explicite des champs à récupérer
+    const features = new APIFeatures(
+      EventModel.find().select('titre prix date region lieu categorie image'),
+      req.query
+    )
       .filter()
       .sort()
       .pagination();
@@ -119,15 +122,22 @@ const getAllEventsController = async (req, res) => {
       });
     }
 
-    // Exemple : suppression champ sensible s’il existe
-    events.forEach(event => {
-      delete event.seller;
-    });
+    // Formater chaque événement pour s'assurer que tous les champs sont présents
+    const formattedEvents = events.map(event => ({
+      _id: event._id,
+      titre: event.titre,
+      prix: event.prix,
+      date: event.date,
+      region: event.region || '',
+      lieu: event.lieu || '',
+      categorie: event.categorie || '',
+      image: event.image || []
+    }));
 
     return res.status(200).json({
       success: true,
-      totalEvents: events.length,
-      events,
+      totalEvents: formattedEvents.length,
+      events: formattedEvents
     });
   } catch (error) {
     console.error(error);
@@ -150,7 +160,8 @@ const getSingleEventController = async (req, res) => {
       });
     }
 
-    const event = await EventModel.findById(eventId);
+    // Sélection explicite des champs à récupérer
+    const event = await EventModel.findById(eventId).select('titre prix date region lieu categorie image');
 
     if (!event) {
       return res.status(404).json({
@@ -159,9 +170,21 @@ const getSingleEventController = async (req, res) => {
       });
     }
 
+    // Formater la réponse pour s'assurer que tous les champs sont présents
+    const formattedEvent = {
+      _id: event._id,
+      titre: event.titre,
+      prix: event.prix,
+      date: event.date,
+      region: event.region || '',
+      lieu: event.lieu || '',
+      categorie: event.categorie || '',
+      image: event.image || []
+    };
+
     return res.status(200).json({
       success: true,
-      event,
+      event: formattedEvent
     });
   } catch (error) {
     console.error(error);

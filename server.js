@@ -16,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/uploads", express.static("uploads")); 
+app.use('/upload',require("./routes/uploadRoutes"));
 //route
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/user", require("./routes/userRoutes"));
