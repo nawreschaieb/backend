@@ -28,8 +28,8 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       required: [true, "user type is required"],
-      default: "Participant",
-      enum: ["Participant", "Organisateur"],
+      default: "participant",
+      enum: ["participant", "organisateur"],
     },
     profile: {
       type: String,

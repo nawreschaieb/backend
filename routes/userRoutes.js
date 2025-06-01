@@ -15,7 +15,7 @@ const router = express.Router();
 //routes
 // GET USER || GET
 router.get("/getAll", protectionMW,admin, getAllUsersController);
-router.get("/getUser/:id", protectionMW,admin, getUserController);
+router.get("/getUser/:id",  getUserController);
 
 // UPDATE PROFILE
 router.put("/updateUser", protectionMW, updateUserController);

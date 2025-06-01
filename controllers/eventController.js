@@ -12,7 +12,8 @@ const path = require("path");
 
 const createEventController = async (req, res) => {
   try {
-    const { titre, prix, date, region, lieu, image, categorie } = req.body;
+const { titre, prix, date, region, lieu, image, categorie } = req.body;
+
   
 
     // Validation basique obligatoire
@@ -47,7 +48,7 @@ const createEventController = async (req, res) => {
       });
     }
 
-    // Gestion upload image (optionnel)
+    // Gestion upload image (optionnel
     let photoFilename = null;
     if (req.file) {
       const uploadDir = path.join(__dirname, "../upload");
@@ -66,15 +67,23 @@ const createEventController = async (req, res) => {
     }
 
     // Création de l'événement
-    const newEvent = new EventModel({
-      titre,
-      lieu,
-      prix,
-      region,
-      categorie,
-      date: eventDate,
-      photo: photoFilename,
-    });
+   const newEvent = new EventModel({
+  titre,
+  lieu,
+  prix,
+  region,
+  categorie,
+  date: eventDate,
+  image: Array.isArray(image)
+    ? image.map((img) => ({
+        url: img.url || img.imageUrl || img,
+        public_id: img.public_id || "",
+      }))
+    : image
+    ? [{ url: image, public_id: "" }]
+    : [],
+});
+
 
     await newEvent.save();
 

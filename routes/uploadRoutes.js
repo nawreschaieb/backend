@@ -4,7 +4,7 @@ const upload = require('../utils/multer');
 const { 
     uploadImage,getSignedImageUrl 
 
-} = require('../controllers/uploadController');
+} = require('../controllers/uploadControllers');
 
 router.post('/image', upload.single('image'), uploadImage);
 router.get('/document/:public_id', getSignedImageUrl);

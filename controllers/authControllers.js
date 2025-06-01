@@ -2,36 +2,43 @@ const userModel = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 
-const registerController = async (req, res) => {
+const registerController = async (req, res) => { 
   try {
-    const { userName, email, phone, password, answer } = req.body;
-    if (!userName || !email || !password || !phone || !answer) {
-      return res.status(500).send({
+    const { userName, email, phone, password, answer, role } = req.body;
+
+    if (!userName || !email || !password || !phone || !answer || !role) {
+      return res.status(400).send({
         success: false,
-        message: "N’oubliez pas de remplir tous les champs !",
+        message: "N’oubliez pas de remplir tous les champs, y compris le rôle !",
       });
     }
+
     const exisiting = await userModel.findOne({ email });
     if (exisiting) {
-      return res.status(500).send({
+      return res.status(400).send({
         success: false,
         message: "Cette adresse e-mail est déjà utilisée, connectez-vous",
       });
     }
+
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+
     const user = await userModel.create({
       userName,
       email,
       phone, 
       password: hashedPassword,
       answer,
+      role, // ⬅️ Ajout ici
     });
+
     res.status(201).send({
       success: true,
       message: "Enregistrement réussi",
       user,
     });
+
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -65,9 +72,15 @@ const loginController = async (req, res) => {
         message: "Identifiants incorrects",
       });
     }
-    const token = JWT.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+const token = JWT.sign({
+  id: user._id,
+  name: user.userName,
+  role: user.role,       // ✅ Obligatoire !
+  roles: user.roles || []
+}, process.env.JWT_SECRET, {
+  expiresIn: '1d',
+});
+
     user.password = undefined;
     res.status(200).send({
       success: true,

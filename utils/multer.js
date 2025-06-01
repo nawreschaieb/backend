@@ -1,17 +1,19 @@
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('./cloudinary');
+const path = require('path');
+const fs = require('fs');
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: async (req, file) => {
-    const folderName = req.body.folder || 'uploads';
-    return {
-      folder: folderName,
-      allowed_formats: ['jpg', 'png', 'jpeg', 'pdf','webp' ],
-      upload_preset: 'secure_upload',
-      type: 'private',
-    };
+// Créer automatiquement le dossier temp s'il n'existe pas
+const tempDir = path.join(__dirname, '../temp');
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, tempDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
